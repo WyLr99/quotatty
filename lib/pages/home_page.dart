@@ -35,16 +35,11 @@ class _HomePageState extends State<HomePage> {
           quote = jsonResponse[0]["quote"];
           author = jsonResponse[0]["author"];
         });
-      } else {
-        setState(() {
-          quote = "Failed to load quote.Try Refreshing Your Internet";
-          author = "";
-        });
       }
     } catch (e) {
       print('Exception occurred: $e');
       setState(() {
-        quote = "An error occurred.";
+        quote = "An error occurred. Please check your internet connection and try again.";
         author = "";
       });
     } finally {
