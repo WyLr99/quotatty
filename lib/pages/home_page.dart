@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,8 +23,7 @@ class _HomePageState extends State<HomePage> {
         isLoading = true;
       });
       final response = await client.get(
-        Uri.parse(
-            'https://api.api-ninjas.com/v1/quotes?category=$category'),
+        Uri.parse('https://api.api-ninjas.com/v1/quotes?category=$category'),
         headers: {
           'X-Api-Key': 'AMKC1GJg3X+FQTASMoFHjg==XtZC6sOWAJ7Y9voE',
         },
@@ -58,24 +58,24 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[50],
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.deepOrangeAccent,
-        title: const Text(
-          'Quotatty',
-          style: TextStyle(color: Colors.white, fontSize: 24),
+        backgroundColor: Colors.blueGrey[50],
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.deepOrangeAccent,
+          title: const Text(
+            'Quotatty',
+            style: TextStyle(color: Colors.white, fontSize: 24),
+          ),
         ),
-      ),
-      body: isLoading ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    
+        body: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Center(
+                child: SingleChildScrollView(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
                     Column(
                       children: [
                         const SizedBox(height: 20),
@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Container(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20,0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
@@ -196,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.grey.withOpacity(0.5),
                               spreadRadius: 2,
                               blurRadius: 7,
-                              offset: const Offset(0, 3), // changes position of shadow
+                              offset: const Offset(0, 3),
                             ),
                           ],
                         ),
@@ -206,26 +206,40 @@ class _HomePageState extends State<HomePage> {
                               '"$quote"',
                               style: const TextStyle(
                                 fontSize: 16,
-                                
                               ),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 10),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                              IconButton(
+                                icon: const Icon(Icons.copy),
+                                tooltip: "Copy to Clipboard",
+                                onPressed: () {
+                                Clipboard.setData(ClipboardData(
+                                  text: '"$quote"\n- $author'));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Copied to clipboard!")),
+                                );
+                                },
+                              ),
+                              Text(
                                 "- $author",
                                 style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              ],
                             ),
+                            
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 50),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.deepOrangeAccent,
@@ -242,12 +256,11 @@ class _HomePageState extends State<HomePage> {
                         fetchQuote();
                       },
                       child: const Text('Get Quote'),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-            ),
-    );
+                    )
+                  ]
+                )
+              )
+            )
+          );
   }
 }
